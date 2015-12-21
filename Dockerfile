@@ -1,0 +1,34 @@
+FROM alpine:3.2
+MAINTAINER Stanislav Vitkovskiy <stas.vitkovsky@gmail.com>
+
+ENV SYNCTHING_USERID 1000
+
+ENV SYNCTHING_VERSION 0.12.9
+ENV GOSU_VERSION 1.7
+
+RUN apk -U add openssl gnupg && \
+    cd /tmp/ && \
+    wget https://github.com/tianon/gosu/releases/download/${GOSU_VERSION}/gosu-amd64.asc && \
+    wget https://github.com/tianon/gosu/releases/download/${GOSU_VERSION}/gosu-amd64 &&\
+    gpg --keyserver pgp.mit.edu --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4 && \
+    gpg --verify gosu-amd64.asc && \
+    chmod +x gosu-amd64 && mv gosu-amd64 /bin/gosu && \
+    wget https://github.com/syncthing/syncthing/releases/download/v${SYNCTHING_VERSION}/sha1sum.txt.asc && \
+    wget https://github.com/syncthing/syncthing/releases/download/v${SYNCTHING_VERSION}/syncthing-linux-amd64-v${SYNCTHING_VERSION}.tar.gz && \
+    gpg --keyserver pool.sks-keyservers.net --recv-keys 37C84554E7E0A261E4F76E1ED26E6ED000654A3E && \
+    gpg --verify sha1sum.txt.asc && \
+    grep syncthing-linux-amd64-v${SYNCTHING_VERSION}.tar.gz sha1sum.txt.asc | sha1sum -c - && \
+    tar -xzf syncthing-linux-amd64-v${SYNCTHING_VERSION}.tar.gz syncthing-linux-amd64-v${SYNCTHING_VERSION}/syncthing && \
+    mv syncthing-linux-amd64-v${SYNCTHING_VERSION}/syncthing /bin/ && \
+    rm -rf /tmp/* && \
+    apk del gnupg openssl && \
+    rm -rf /var/lib/apt/lists/*
+
+COPY start.sh /
+RUN chmod +x /start.sh && mkdir -p /Config /Data
+
+EXPOSE 8384 22000 21027/udp
+
+VOLUME ["/Config", "/Data"]
+
+CMD ["/start.sh"]
