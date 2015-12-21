@@ -1,10 +1,9 @@
 FROM alpine:3.2
 MAINTAINER Stanislav Vitkovskiy <stas.vitkovsky@gmail.com>
 
-ENV SYNCTHING_USERID 1000
-
-ENV SYNCTHING_VERSION 0.12.9
-ENV GOSU_VERSION 1.7
+ENV SYNCTHING_USERID=1000 \
+    SYNCTHING_VERSION=0.12.9 \
+    GOSU_VERSION=1.7
 
 RUN apk -U add openssl gnupg && \
     cd /tmp/ && \
