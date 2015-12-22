@@ -5,8 +5,8 @@ ENV SYNCTHING_USERID=1000 \
     SYNCTHING_VERSION=0.12.9 \
     GOSU_VERSION=1.7
 
+WORKDIR /tmp
 RUN apk -U add openssl gnupg && \
-    cd /tmp/ && \
     wget https://github.com/tianon/gosu/releases/download/${GOSU_VERSION}/gosu-amd64.asc && \
     wget https://github.com/tianon/gosu/releases/download/${GOSU_VERSION}/gosu-amd64 &&\
     gpg --keyserver pgp.mit.edu --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4 && \
