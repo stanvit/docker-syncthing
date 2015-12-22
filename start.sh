@@ -1,7 +1,7 @@
 #!/bin/sh
 
 if ! getent passwd ${SYNCTHING_USERID}; then
-    echo "Creating new syncthing account with used ID ${SYNCTHING_USERID}"
+    echo "Creating new syncthing account with user ID ${SYNCTHING_USERID}"
     adduser -D -g "Syncthing Account" -u ${SYNCTHING_USERID} syncthing
 fi
 

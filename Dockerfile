@@ -7,19 +7,28 @@ ENV SYNCTHING_USERID=1000 \
 
 WORKDIR /tmp
 RUN apk -U add openssl gnupg && \
-    wget https://github.com/tianon/gosu/releases/download/${GOSU_VERSION}/gosu-amd64.asc && \
-    wget https://github.com/tianon/gosu/releases/download/${GOSU_VERSION}/gosu-amd64 &&\
-    gpg --keyserver pgp.mit.edu --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4 && \
-    gpg --verify gosu-amd64.asc && \
+    echo "Getting GPG keys for gosu and Syncthing" && \
+    gpg --quiet --keyserver keyserver.ubuntu.com  --recv-keys 37C84554E7E0A261E4F76E1ED26E6ED000654A3E B42F6819007F00F88E364FD4036A9C25BF357DD4 && \
+    echo "Getting gosu and its signature" && \
+    wget -q https://github.com/tianon/gosu/releases/download/${GOSU_VERSION}/gosu-amd64.asc && \
+    wget -q https://github.com/tianon/gosu/releases/download/${GOSU_VERSION}/gosu-amd64 &&\
+    echo "Checking gosu signature" && \
+    gpg --quiet --verify gosu-amd64.asc && \
+    echo "Installing gosu" && \
     chmod +x gosu-amd64 && mv gosu-amd64 /bin/gosu && \
-    wget https://github.com/syncthing/syncthing/releases/download/v${SYNCTHING_VERSION}/sha1sum.txt.asc && \
-    wget https://github.com/syncthing/syncthing/releases/download/v${SYNCTHING_VERSION}/syncthing-linux-amd64-v${SYNCTHING_VERSION}.tar.gz && \
-    gpg --keyserver pool.sks-keyservers.net --recv-keys 37C84554E7E0A261E4F76E1ED26E6ED000654A3E && \
-    gpg --verify sha1sum.txt.asc && \
+    echo "Getting Syncthing and its signature" && \
+    wget -q https://github.com/syncthing/syncthing/releases/download/v${SYNCTHING_VERSION}/sha1sum.txt.asc && \
+    wget -q https://github.com/syncthing/syncthing/releases/download/v${SYNCTHING_VERSION}/syncthing-linux-amd64-v${SYNCTHING_VERSION}.tar.gz && \
+    echo "Checking gosu sha1 sum signature" && \
+    gpg --quiet --verify sha1sum.txt.asc && \
+    echo "Checking gosu sha1 checksum" && \
     grep syncthing-linux-amd64-v${SYNCTHING_VERSION}.tar.gz sha1sum.txt.asc | sha1sum -c - && \
+    echo "Installing syncthing" && \
     tar -xzf syncthing-linux-amd64-v${SYNCTHING_VERSION}.tar.gz syncthing-linux-amd64-v${SYNCTHING_VERSION}/syncthing && \
     mv syncthing-linux-amd64-v${SYNCTHING_VERSION}/syncthing /bin/ && \
+    echo "Cleaning up" && \
     rm -rf /tmp/* && \
+    rm -rf /root/* && \
     apk del gnupg openssl && \
     rm -rf /var/lib/apt/lists/*
 
