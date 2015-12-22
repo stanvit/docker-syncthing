@@ -8,7 +8,7 @@ ENV SYNCTHING_USERID=1000 \
 WORKDIR /tmp
 RUN apk -U add openssl gnupg && \
     echo "Getting GPG keys for gosu and Syncthing" && \
-    gpg --quiet --keyserver keyserver.ubuntu.com  --recv-keys 37C84554E7E0A261E4F76E1ED26E6ED000654A3E B42F6819007F00F88E364FD4036A9C25BF357DD4 && \
+    gpg --quiet --keyserver hkp://keyserver.ubuntu.com:80  --recv-keys 37C84554E7E0A261E4F76E1ED26E6ED000654A3E B42F6819007F00F88E364FD4036A9C25BF357DD4 && \
     echo "Getting gosu and its signature" && \
     wget -q https://github.com/tianon/gosu/releases/download/${GOSU_VERSION}/gosu-amd64.asc && \
     wget -q https://github.com/tianon/gosu/releases/download/${GOSU_VERSION}/gosu-amd64 &&\
