@@ -1,12 +1,12 @@
 FROM alpine:3.2
 MAINTAINER Stanislav Vitkovskiy <stas.vitkovsky@gmail.com>
 
-ENV SYNCTHING_USERID=1000 \
-    SYNCTHING_VERSION=0.12.9 \
+ARG SYNCTHING_VERSION=0.12.9\
     GOSU_VERSION=1.7
+ENV SYNCTHING_USERID=1000
 
-WORKDIR /tmp
-RUN apk -U add openssl gnupg && \
+RUN cd /tmp &&\
+    apk -U add openssl gnupg && \
     echo "Getting GPG keys for gosu and Syncthing" && \
     gpg-agent --daemon && \
     gpg --quiet --keyserver hkp://keyserver.ubuntu.com:80  --recv-keys 37C84554E7E0A261E4F76E1ED26E6ED000654A3E B42F6819007F00F88E364FD4036A9C25BF357DD4 && \
